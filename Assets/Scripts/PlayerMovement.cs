@@ -15,6 +15,8 @@ public class PlayerMovement : MonoBehaviour
     private int coinCounter = 0;
     public TMP_Text counterText;
 
+    public float deathY = -10f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -25,11 +27,6 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxis("Horizontal");
 
-        if (horizontalInput != 0f)
-        {
-            Debug.Log("Input ontvangen: " + horizontalInput);
-        }
-
         FlipSprite();
 
         if (Input.GetButtonDown("Jump") && !isJumping)
@@ -37,16 +34,18 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
             isJumping = true;
         }
+
+        if (transform.position.y < deathY)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+            );
+        }
     }
 
     void FixedUpdate()
     {
         rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
-
-        if (Mathf.Abs(rb.linearVelocity.x) > 0.01f)
-        {
-            Debug.Log("Speler beweegt. Velocity = " + rb.linearVelocity);
-        }
     }
 
     void FlipSprite()
